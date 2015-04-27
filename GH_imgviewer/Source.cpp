@@ -51,7 +51,7 @@ int main(int argc, char ** argv){
 		filenames.push_back(filenameSS.str());
 
 		load_frames(filenames, pointmaps, frame_data);
-		load_processed_frames(filenames, bpdv.size(), frame_data_processed);
+		//load_processed_frames(filenames, bpdv.size(), frame_data_processed);
 
 		if (!frame_data.empty())
 		{
@@ -70,13 +70,16 @@ int main(int argc, char ** argv){
 			}
 		}
 
-		char inp = cv::waitKey();
+		cv::waitKey(5);
+		++current_frame;
 
-		if (inp == 'z'){
-			--current_frame;
-		}
-		else if (inp == 'x'){
-			++current_frame;
-		}
+		//char inp = cv::waitKey();
+		//
+		//if (inp == 'z'){
+		//	--current_frame;
+		//}
+		//else if (inp == 'x'){
+		//	++current_frame;
+		//}
 	}
 }
