@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include <iostream>
 #include <opencv2\opencv.hpp>
 #include <AssimpCV.h>
@@ -9,6 +10,13 @@ int main(int argc, char ** argv){
 	if (argc < 2){
 		std::cout << "pls enter the directory";
 		return 0;
+	}
+
+	std::string out_directory;
+	bool write_im = argc >= 3;
+	if (write_im){
+		out_directory = std::string(argv[2]);
+		CreateDirectory(out_directory.c_str(), NULL);
 	}
 
 	std::string directory(argv[1]);
@@ -56,21 +64,32 @@ int main(int argc, char ** argv){
 		if (!frame_data.empty())
 		{
 			cv::imshow("full picture", frame_data[0].mmColor);
-		}
+			cv::Mat depth_vis = visualize_float(frame_data[0].mmDepth);
+			cv::imshow("depth", depth_vis);
 
-		if (!frame_data_processed.empty()){
-			std::stringstream winSS;
-			for (int i = 0; i < bpdv.size(); ++i){
-
-				if (frame_data_processed[0].mBodyPartImages[i].mMat.empty()) continue;
-
-				winSS.str("");
-				winSS << " body part " << i;
-				cv::imshow(winSS.str(), frame_data_processed[0].mBodyPartImages[i].mMat);
+			if (write_im){
+				std::stringstream ss;
+				ss << out_directory << "/rgb" << current_frame << ".png";
+				cv::imwrite(ss.str(), frame_data[0].mmColor);
+				ss.str("");
+				ss << out_directory << "/depth" << current_frame << ".png";
+				cv::imwrite(ss.str(), depth_vis);
 			}
 		}
 
-		cv::waitKey(5);
+		//if (!frame_data_processed.empty()){
+		//	std::stringstream winSS;
+		//	for (int i = 0; i < bpdv.size(); ++i){
+		//
+		//		if (frame_data_processed[0].mBodyPartImages[i].mMat.empty()) continue;
+		//
+		//		winSS.str("");
+		//		winSS << " body part " << i;
+		//		cv::imshow(winSS.str(), frame_data_processed[0].mBodyPartImages[i].mMat);
+		//	}
+		//}
+
+		cv::waitKey(25);
 		++current_frame;
 
 		//char inp = cv::waitKey();
